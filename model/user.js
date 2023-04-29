@@ -33,4 +33,15 @@ async function isUser(userId){
     return await userDB.findOne({id: userId})
 
 }
-module.exports = {insertUser, findUser, createNote, getNotesByUserId, isUser}
+
+async function changeNote(title, newNote){
+    const getNoteInfo = await notesDB.findOne({title})
+    console.log(getNoteInfo)
+    await notesDB.update(
+        {text: getNoteInfo.text},
+        {$set: {text: newNote, modifiedAt: new Date()}}
+        )
+    return getNoteInfo
+
+}
+module.exports = {insertUser, findUser, createNote, getNotesByUserId, isUser, changeNote}

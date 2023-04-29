@@ -1,15 +1,13 @@
 const { Router } = require('express')
 const router = Router()
-const {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser} = require('../middleware/notes.middlware')
-const {login, createUser, addNote, getNotes} = require('../controlers/user.controler')
+const {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser, validateEditeInfo} = require('../middleware/notes.middlware')
+const {login, createUser, addNote, getNotes, editNote} = require('../controlers/user.controler')
 
 router.get('/notes', checkToken, validateUserId, checkIfUser, getNotes)
 
 router.post('/notes', checkToken, validateNotesInfo, addNote)
 
-router.put('/notes', (req, res)=>{
-    
-})
+router.put('/notes',checkToken,checkIfUser,validateEditeInfo, editNote)
 
 router.delete('/notes', (req, res)=>{
     

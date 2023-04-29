@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { insertUser, findUser, isUser } = require('../model/user')
-const { userSchemaChecker, noteSchemaChecker, checkUserId } = require('../schema/schema')
+const { userSchemaChecker, noteSchemaChecker, checkUserId, checkEditeNote } = require('../schema/schema')
 
 function checkToken(req, res, next){
     const token = req.headers.auth.replace('Bearer ', '')
@@ -43,5 +43,12 @@ async function checkIfUser(req, res, next){
     next()
 }
 
+function validateEditeInfo(req, res, next){
+    const editInfo = checkEditeNote(req.body)
 
-module.exports = {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser }
+    if(editInfo.error) return res.status(400).json({sucess: false, error: editInfo.error.message})
+    next()
+}
+
+
+module.exports = {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser, validateEditeInfo }

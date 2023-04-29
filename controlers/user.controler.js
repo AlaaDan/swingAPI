@@ -1,5 +1,5 @@
 const {userDb, notesDB} = require('../model/user')
-const { insertUser, findUser, createNote, getNotesByUserId, isUser } = require('../model/user')
+const { insertUser, findUser, createNote, getNotesByUserId, isUser, changeNote } = require('../model/user')
 const { hashPass, comparePass } = require("../bcrypt")
 const jwt = require('jsonwebtoken')
 const { not } = require('joi')
@@ -48,25 +48,34 @@ async function getNotes(req, res){
         const {userID} = req.body
         const user = await isUser(userID)
         console.log(user)
-            const userNotes = await getNotesByUserId(userID)
-            //console.log(notes)
-            const frontEndNotes = userNotes.map(eachNote =>{
-                return {
-                        NoteId: eachNote.noteID, 
-                        UserID: eachNote.userID, 
-                        NoteTitle: eachNote.title, 
-                        NoteText: eachNote.text, 
-                        CreatedAt: eachNote.createdAT, 
-                        ModifiedAt: eachNote.modifiedAt}
+        const userNotes = await getNotesByUserId(userID)
+        //console.log(notes)
+        const frontEndNotes = userNotes.map(eachNote =>{
+            return {
+                    NoteId: eachNote.noteID, 
+                    UserID: eachNote.userID, 
+                    NoteTitle: eachNote.title, 
+                    NoteText: eachNote.text, 
+                    CreatedAt: eachNote.createdAT, 
+                    ModifiedAt: eachNote.modifiedAt}
             })
-            res.status(200).json({sucess: true, Notes: frontEndNotes.length == 0 ? "You don't have any notes" : frontEndNotes})
+        res.status(200).json({sucess: true, Notes: frontEndNotes.length == 0 ? "You don't have any notes" : frontEndNotes})
     } catch (error) {
         res.status(500).json({sucees: false, msg: error.message})
-    }
-    
-    
-    
+    }    
+}
+async function editNote(req, res){
+    try{
+        const {userID, title, newNote} = req.body
+        const user = await isUser(userID)
+        console.log(user)
+        const updatedNote = await changeNote(title, newNote)
 
+        res.status(200).json({success: true, updatedNote: updatedNote})
+
+    } catch (error){
+    res.status(404).json({sccuess: false, msg: "Wrong title/Title not found!"})
+    }
 }
 
-module.exports = {login, createUser, addNote, getNotes}
+module.exports = {login, createUser, addNote, getNotes, editNote}
