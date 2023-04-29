@@ -1,19 +1,11 @@
 const { Router } = require('express')
 const router = Router()
-const uuid = require('uuid-random')
-const { hashPass, comparePass } = require("../bcrypt")
-const { insertUser, findUser } = require('../model/user')
-const jwt = require('jsonwebtoken')
-const {checkToken} = require('../middleware/notes.middlware')
+const {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser} = require('../middleware/notes.middlware')
+const {login, createUser, addNote, getNotes} = require('../controlers/user.controler')
 
+router.get('/notes', checkToken, validateUserId, checkIfUser, getNotes)
 
-router.get('/notes', (req, res)=>{
-
-})
-
-router.post('/notes', (req, res)=>{
-    
-})
+router.post('/notes', checkToken, validateNotesInfo, addNote)
 
 router.put('/notes', (req, res)=>{
     
@@ -23,41 +15,14 @@ router.delete('/notes', (req, res)=>{
     
 })
 
-router.post('/user/signup', async (req, res)=>{
-    const { username, password } = req.body
+router.post('/user/signup', validateUserInfo, createUser)
 
-    const pass = await hashPass(password)
+router.post('/user/login', validateUserInfo, login)
 
-    insertUser(username, pass)
-
-    res.json({success: true})
-
-    
-})
-
-router.post('/user/login', async (req, res)=>{
-    const { username, password } = req.body
-
-    const user = await findUser(username)
-    console.log(user)
-    const correctPass = await comparePass(password, user.password)
-    console.log(correctPass)
-    resutl = {
-        success: false
-    }
-    if(correctPass){
-        const token = jwt.sign({id: user.id}, 'a1b1c1', {expiresIn: 600,});
-        resutl.success = true
-        resutl.token = token
-    }else {
-        resutl.messsage = "Incorrect login information"
-    }
-
-    res.json(resutl)
-})
-
-router.get('/notes/search', checkToken, (req, res)=>{
+router.get('/notes/search/title:', checkToken, (req, res)=>{
     res.json("Correct token")
+
+    // Should search for the title 
 })
 
 

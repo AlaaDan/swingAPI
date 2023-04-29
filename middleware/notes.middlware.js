@@ -1,16 +1,47 @@
 const jwt = require('jsonwebtoken')
+const { insertUser, findUser, isUser } = require('../model/user')
+const { userSchemaChecker, noteSchemaChecker, checkUserId } = require('../schema/schema')
 
 function checkToken(req, res, next){
     const token = req.headers.auth.replace('Bearer ', '')
 
     try{
         const data = jwt.verify(token, 'a1b1c1')
-        console.log(data)
+        console.log("This is the date",data)
         next()
     } catch (error){
-        res.json({sucess: false, error: "Invalid token"})
+        res.status(400).json({sucess: false, error: "Invalid token"})
     }
 }
 
+function validateUserInfo(req, res, next){
+    const userInfo = userSchemaChecker(req.body)
 
-module.exports = {checkToken}
+    if(userInfo.error) return res.status(400).json({success: false, error: userInfo.error.message})
+    next()
+}
+
+function validateNotesInfo(req, res, next){
+    const notesInfo = noteSchemaChecker(req.body)
+
+    if(notesInfo.error) return res.status(400).json({success: false, error: notesInfo.error.message})
+    next()
+}
+
+function validateUserId(req, res, next){
+    const userID = checkUserId(req.body)
+
+    if(userID.error) return res.status(400).json({sucess: false, error: userID.error.message})
+    next()
+}
+
+async function checkIfUser(req, res, next){
+    const {userID} = req.body
+    const user = await isUser(userID)
+
+    if(!user) return res.status(404).json({success: false, error: "No such ID found in DataBase"})
+    next()
+}
+
+
+module.exports = {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser }
