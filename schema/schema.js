@@ -11,8 +11,8 @@ function userSchemaChecker(userInfo){
 function noteSchemaChecker(noteInfo){
     const schema = Joi.object({
         userID: Joi.string().required(),
-        title: Joi.string().max(50).required(),
-        text: Joi.string().max(300).required()
+        title: Joi.string().min(1).max(50).required(),
+        text: Joi.string().min(1).max(300).required()
     })
     return schema.validate(noteInfo)
 }
@@ -27,10 +27,18 @@ function checkUserId(userID){
 function checkEditeNote(info){
     const schema = Joi.object({
         userID: Joi.string().required(),
-        title: Joi.string().max(50).required(),
-        newNote: Joi.string().max(300).required() 
+        title: Joi.string().min(1).max(50).required(),
+        newNote: Joi.string().min(1).max(300).required() 
     })
     return schema.validate(info)
 }
 
-module.exports = { userSchemaChecker, noteSchemaChecker, checkUserId, checkEditeNote}
+function schemaDeleteNote(noteTitle){
+    const schema = Joi.object({
+        userID: Joi.string().required(),
+        title: Joi.string().min(1).max(50).required()
+    })
+    return schema.validate(noteTitle)
+}
+
+module.exports = { userSchemaChecker, noteSchemaChecker, checkUserId, checkEditeNote, schemaDeleteNote}

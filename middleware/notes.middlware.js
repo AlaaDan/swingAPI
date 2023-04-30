@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { insertUser, findUser, isUser } = require('../model/user')
-const { userSchemaChecker, noteSchemaChecker, checkUserId, checkEditeNote } = require('../schema/schema')
+const { userSchemaChecker, noteSchemaChecker, checkUserId, checkEditeNote, schemaDeleteNote } = require('../schema/schema')
 
 function checkToken(req, res, next){
     const token = req.headers.auth.replace('Bearer ', '')
@@ -50,5 +50,12 @@ function validateEditeInfo(req, res, next){
     next()
 }
 
+function validateDeleteInfo(req, res, next){
+    // Alternative if I don't want to use params.
+    const deleteInfo = schemaDeleteNote(req.body)
 
-module.exports = {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser, validateEditeInfo }
+    if(deleteInfo.error) return res.status(400).json({sccuess: false, error: deleteInfo.error.message})
+    next()
+}
+
+module.exports = {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser, validateEditeInfo, validateDeleteInfo }

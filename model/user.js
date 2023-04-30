@@ -36,12 +36,25 @@ async function isUser(userId){
 
 async function changeNote(title, newNote){
     const getNoteInfo = await notesDB.findOne({title})
-    console.log(getNoteInfo)
+    //console.log(getNoteInfo)
     await notesDB.update(
         {text: getNoteInfo.text},
         {$set: {text: newNote, modifiedAt: new Date()}}
         )
-    return getNoteInfo
+    return await notesDB.findOne({title})
 
 }
-module.exports = {insertUser, findUser, createNote, getNotesByUserId, isUser, changeNote}
+
+
+async function deleteNoteFromDB(noteID){
+    const isNote = await notesDB.findOne({noteID: noteID})
+    //console.log(isNote)
+    return await notesDB.remove({title: isNote.title})
+
+}
+
+
+async function searchForNote(noteTitle){
+    return await notesDB.findOne({title: noteTitle})
+}
+module.exports = {insertUser, findUser, createNote, getNotesByUserId, isUser, changeNote, deleteNoteFromDB, searchForNote}

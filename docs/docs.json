@@ -1,0 +1,375 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "description": "APi for Swing Notes",
+        "title": "Swing API",
+        "version": "1.0.0"
+    },
+    "components":{
+        "schemas": {
+            "UserInfo ": {
+                "type": "object",
+                "properties": {
+                    "username":{
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SaveNote":{
+                "type":"object",
+                "properties": {
+                    "userID": {
+                        "type":"string"
+                    },
+                    "title": {
+                        "type":"string"
+                    },
+                    "text":{
+                        "type":"string"
+                    }
+                }
+            },
+            "DownloadNotes":{
+                "type":"object",
+                "properties": {
+                    "userID": {
+                        "type":"string"
+                    }
+                }
+            },
+            "EditNote": {
+                "type":"object",
+                "properties": {
+                    "userID": {
+                        "type":"string"
+                    },
+                    "title": {
+                        "type":"string"
+                    },
+                    "newNote": {
+                        "type":"string"
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/user/signup": {
+            "post": {
+                "description": "Signup",
+                "reqBody":{
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "$ref": "#/components/schemas/UserInfo"   
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "Success": {
+                                            "type": "boolean"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    },
+                                    "instrution": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }, 
+                    "description": "Signup successful"
+                }, "500":{
+                    "description": "Internal server error"
+                }
+            },
+            "summary": "Create an account"
+        }
+    },
+    "/api/user/login": {
+        "post": {
+            "description": "Login",
+            "reqBody":{
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema":{
+                            "$ref": "#/components/schemas/user"   
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "Success": {
+                                        "type": "boolean"
+                                },
+                                "userID": {
+                                    "type": "string"
+                                },
+                                "token": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }, 
+                "description": "Login successful"
+            }, "400":{
+                "description": "Incorrect Password"
+            }, "404":{
+                "description": "Incorrect username"
+            }
+        },
+        "summary": "Login"
+    }
+    },
+    "/api/notes": {
+        "post": {
+            "description": "Save a note",
+            "reqBody":{
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema":{
+                            "$ref": "#/components/schemas/SaveNote"   
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "Success": {
+                                        "type": "boolean"
+                                },
+                                "message": {
+                                    "type": "string"
+                                },
+                                "note": {
+                                    "type": "object",
+                                    "properties": {
+                                        "NoteId": {
+                                            "type":"string"
+                                        },
+                                        "title": {
+                                            "type":"string"
+                                        },
+                                        "text": {
+                                            "type":"string"
+                                        },
+                                        "createdAT": {
+                                            "type":"string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }, 
+                "description": "Note added successfully"
+            }, "500":{
+                "description": "Internal server error"
+            }
+        },
+        "summary": "Add Note"
+    },
+    "get": {
+        "description": "Download all notes belong to a user ID",
+        "reqBody":{
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema":{
+                        "$ref": "#/components/schemas/DownloadNotes"   
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "content": {
+                    "application/json": {
+                        "schema":{
+                            "type": "object",
+                            "properties": {
+                                "Success": {
+                                    "type": "boolean"
+                            },
+                            "Notes": {
+                                "type": "array",
+                                "items": {
+                                    "type":"object", 
+                                        "properties": {
+                                            "NoteId": {
+                                                "type":"string"
+                                            },
+                                            "UserID": {
+                                                "type":"string"
+                                            },
+                                            "NoteTitle": {
+                                                "type":"string"
+                                            },
+                                            "Notetext": {
+                                                "type":"string"
+                                            },
+                                            "CreatedAt": {
+                                                "type":"string"
+                                            },
+                                            "ModifiedAt": {
+                                                "type":"string"
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                    }
+                }
+            }, 
+            "description": "Download successful"
+        }, "500":{
+            "description": "Internal server error"
+        }
+    },
+    "summary": "Download Notes"
+    },
+    "put": {
+        "description": "Download all notes belong to a user ID",
+        "reqBody":{
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema":{
+                        "$ref": "#/components/schemas/DownloadNotes"   
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "content": {
+                    "application/json": {
+                        "schema":{
+                            "type": "object",
+                            "properties": {
+                                "Success": {
+                                    "type": "boolean"
+                            },
+                            "UpdatedNote": {
+                                "type": "object",
+                                "properties": { 
+                                    "Title": {
+                                        "type":"string"
+                                    },
+                                    "Text": {
+                                        "type":"string"
+                                    },
+                                    "CreatedAT": {
+                                        "type":"string"
+                                    },
+                                    "ModifiedAt": {
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }, 
+            "description": "Edit successful"
+        }, "404":{
+            "description": "Title not found"
+        }
+    },
+    "summary": "Edite Notes"
+    }
+
+    },
+    "/api/notes/{noteID}": {
+        "delete": {
+            "description": "Delete a note by note ID",
+            "reqBody":{
+                "required": false
+                    },
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "Success": {
+                                        "type": "boolean"
+                                },
+                                "Message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }, 
+                "description": "Delete successful"
+            }, "404":{
+                "description": "Not such note ID"
+            }
+        },
+        "summary": "Delete a note"
+    }
+    },
+    "/api/notes/search/{title}": {
+        "get": {
+            "description": "Search for a note by note title",
+            "reqBody":{
+                "required": false
+                    },
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "Success": {
+                                        "type": "boolean"
+                                },
+                                "Title": {
+                                    "type": "string"
+                                },
+                                "Note": {
+                                    "type":"string"
+                                }
+                            }
+                        }
+                    }
+                }, 
+                "description": "Search successful"
+            }, "404":{
+                "description": "Not such note title"
+            }
+        },
+        "summary": "Search for a note"
+    }
+    }
+}
+}

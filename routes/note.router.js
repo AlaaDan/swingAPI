@@ -1,27 +1,21 @@
 const { Router } = require('express')
 const router = Router()
-const {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser, validateEditeInfo} = require('../middleware/notes.middlware')
-const {login, createUser, addNote, getNotes, editNote} = require('../controlers/user.controler')
+const {checkToken, validateUserInfo, validateNotesInfo, validateUserId, checkIfUser, validateEditeInfo, validateDeleteInfo} = require('../middleware/notes.middlware')
+const {login, createUser, addNote, getNotes, editNote, deleteNote, getNoteByTitle} = require('../controlers/user.controler')
 
 router.get('/notes', checkToken, validateUserId, checkIfUser, getNotes)
 
-router.post('/notes', checkToken, validateNotesInfo, addNote)
+router.post('/notes', checkToken, validateNotesInfo,checkIfUser, addNote)
 
-router.put('/notes',checkToken,checkIfUser,validateEditeInfo, editNote)
+router.put('/notes',checkToken,validateEditeInfo,checkIfUser, editNote)
 
-router.delete('/notes', (req, res)=>{
-    
-})
+router.delete('/notes/:noteID', checkToken, deleteNote)
 
 router.post('/user/signup', validateUserInfo, createUser)
 
 router.post('/user/login', validateUserInfo, login)
 
-router.get('/notes/search/title:', checkToken, (req, res)=>{
-    res.json("Correct token")
-
-    // Should search for the title 
-})
+router.get('/notes/search/:title', checkToken, getNoteByTitle)
 
 
 module.exports = router
